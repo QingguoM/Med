@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CM" >
+
+	<!-- 根据用户id查询用户信息 -->
+	<select id="selectPwByName" parameterType="java.lang.String" resultType="java.util.Map" >
+	    select * from operator where username = #{username}
+	</select> 
+	
+	<!-- 根据id删除库存信息 -->
+	<delete id="deleteStoreById" parameterType="java.lang.Integer">
+	    DELETE FROM store WHERE id = #{id}
+	</delete>
+	
+	<!-- 根据id修改库存信息 -->
+	<update id="updateStoreOrder" parameterType="java.lang.String">
+	    UPDATE store SET  
+	    	<if test ="count !=null and count != ''">,count = #{count}</if>
+	    	<if test ="code !=null and code != ''">,code = #{code}</if> and
+		    <if test ="number !=null and number != ''">,number = #{number}</if> and
+		    <if test ="name !=null and name != ''">,name = #{name}</if> and
+		    <if test ="type !=null and type != ''">,type = #{type}</if> and
+		    <if test ="made_date !=null and made_date != ''">,made_date = #{made_date}</if> and
+		    <if test ="useless_date !=null and useless_date != ''">,useless_date = #{useless_date}</if> and
+		    <if test ="unit !=null and unit != ''">,unit = #{unit}</if> and
+		    <if test ="price !=null and price != ''">,price = #{price}</if> 
+	    WHERE id = #{id}
+	</update>
+	
+	<!-- 条件查询库存信息 -->
+	<select id="selectStoreOrder" parameterType="java.lang.String" resultType="java.util.Map" >
+	    SELECT * FROM store WHERE 
+	    <if test ="id !=null and id != ''">,id = #{id}</if> and
+	    <if test ="code !=null and code != ''">,code = #{code}</if> and
+	    <if test ="number !=null and number != ''">,number = #{number}</if> and
+	    <if test ="name !=null and name != ''">,name = #{name}</if> and
+	    <if test ="type !=null and type != ''">,type = #{type}</if> and
+	    <if test ="made_date !=null and made_date != ''">,made_date = #{made_date}</if> and
+	    <if test ="useless_date !=null and useless_date != ''">,useless_date = #{useless_date}</if> and
+	    <if test ="unit !=null and unit != ''">,unit = #{unit}</if> and
+	    <if test ="price !=null and price != ''">,price = #{price}</if> and
+	    <if test ="count !=null and count != ''">,count = #{count}</if> 
+	</select>
+	
+</mapper>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="IN" >
+
+	<!-- 条件查询入库信息 -->
+	<select id="selectALLInOrder" parameterType="java.lang.String" resultType="java.util.Map" >
+	    select * from inorder where 
+	    <if test ="id !=null and id != ''">,id = #{id}</if>
+	    <if test ="code !=null and code != ''">,code = #{code}</if>
+	    <if test ="number !=null and number != ''">,number = #{number}</if>
+	    <if test ="name !=null and name != ''">,name = #{name}</if>
+	    <if test ="unit !=null and unit != ''">,unit = #{unit}</if>
+	    <if test ="made_date !=null and made_date != ''">,made_date = #{made_date}</if>
+	    <if test ="useless_date !=null and useless_date != ''">,useless_date = #{useless_date}</if>
+	    <if test ="input_date !=null and input_date != ''">,input_date = #{input_date}</if>
+	    <if test ="input_com !=null and input_com != ''">,input_com = #{input_com}</if>
+	    <if test ="price !=null and price != ''">,price = #{price}</if>
+	    <if test ="count !=null and count != ''">,count = #{count}</if>
+	    <if test ="total !=null and total != ''">,total = #{total}</if>
+	</select>
+	
+	<!-- 根据id查询入库信息 -->
+	<select id="selectOneInById" parameterType="java.lang.String" >
+	    select * from inorder where id = #{id}
+	</select>
+	
+	<!-- 根据id修改入库订单信息 -->
+	<update id="updateOneInById" parameterType="java.util.Map">
+	    UPDATE inorder SET
+	    <if test ="code !=null and code != ''">,code = #{code}</if>
+	    <if test ="number !=null and number != ''">,number = #{number}</if>
+	    <if test ="name !=null and name != ''">,name = #{name}</if>
+	    <if test ="unit !=null and unit != ''">,unit = #{unit}</if>
+	    <if test ="made_date !=null and made_date != ''">,made_date = #{made_date}</if>
+	    <if test ="useless_date !=null and useless_date != ''">,useless_date = #{useless_date}</if>
+	    <if test ="input_date !=null and input_date != ''">,input_date = #{input_date}</if>
+	    <if test ="input_com !=null and input_com != ''">,input_com = #{input_com}</if>
+	    <if test ="price !=null and price != ''">,price = #{price}</if>
+	    <if test ="count !=null and count != ''">,count = #{count}</if>
+	    <if test ="total !=null and total != ''">,total = #{total}</if>
+	    WHERE id = #{id}
+	</update>
+	
+	<!-- 根据id删除入库订单 -->
+	<delete id ="deleteById" parameterType="java.util.Map">
+	    DELETE FROM inorder WHERE id = #{id}
+	</delete>
+	
+	<!-- 删除多个入库订单 -->
+	<delete id ="deleteByIds" parameterType="java.util.List">
+	     DELETE FROM inOrder WHERE id = 
+	    <foreach item ="item" index="index" 
+	        	 collection="list" open="(" 
+	        	 separator="," close=")">
+	        #{id}
+	    </foreach>
+	    DELETE FROM inorder 
+	</delete>
+	
+	<insert id="insertInOrder" parameterType="java.util.Map">
+	    INSERT INTO inorder(
+	    	code,number,name,type,unit,
+			made_date,useless_date,input_date,
+			input_com,price,count,total)
+		VALUES(
+			<if test ="code !=null and code != ''">,code = #{code}</if>
+		    <if test ="number !=null and number != ''">,number = #{number}</if>
+		    <if test ="name !=null and name != ''">,name = #{name}</if>
+		    <if test ="unit !=null and unit != ''">,unit = #{unit}</if>
+		    <if test ="made_date !=null and made_date != ''">,made_date = #{made_date}</if>
+		    <if test ="useless_date !=null and useless_date != ''">,useless_date = #{useless_date}</if>
+		    <if test ="input_date !=null and input_date != ''">,input_date = #{input_date}</if>
+		    <if test ="input_com !=null and input_com != ''">,input_com = #{input_com}</if>
+		    <if test ="price !=null and price != ''">,price = #{price}</if>
+		    <if test ="count !=null and count != ''">,count = #{count}</if>
+		    <if test ="total !=null and total != ''">,total = #{total}</if>
+		)
+	</insert>
+	
+</mapper>

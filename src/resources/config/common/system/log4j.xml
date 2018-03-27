@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<param name="Threshold" value="info" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="[%-5p %d{yyyy-MM-dd HH:mm:ss SSS} ] Thread[%t] %x %l %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">  
+            <param name="levelMin" value="info" />  
+            <param name="levelMax" value="error" />  
+            <param name="AcceptOnMatch" value="true" />  
+        </filter>
+	</appender>
+	
+	<appender name="platform" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="/waslog/aplog/web/platform.log"/>
+		<param name="Append" value="true"/>
+		<param name="MaxBackupIndex" value="50"/>
+		<param name="MaxFileSize" value="10MB"/>
+		<param name="encoding" value="GB2312"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="[%-5p %d{yyyy-MM-dd HH:mm:ss SSS} ] Thread[%t] %x %l %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">  
+            <param name="levelMin" value="info" />  
+            <param name="levelMax" value="error" />  
+            <param name="AcceptOnMatch" value="true" />  
+        </filter>
+	</appender>
+	
+	<!-- RollingFileAppender:文件大小达到指定尺寸的时候产生一个新的文件 -->
+	<appender name="common" class="org.apache.log4j.RollingFileAppender"> 
+		 <!-- 输出目录和文件 -->
+		<param name="File" value="/waslog/aplog/web/common.log"/>     
+		<!-- 是否在重新启动服务时，在原有日志的基础上添加日志 -->
+		<param name="Append" value="true"/>
+		<!-- 设置文件备份个数，当log文件的大小超过上面文件设置的大小时，就会进行备份，当设置的文件备份个数用完后，他会自动覆盖原有的log -->   
+		<param name="MaxBackupIndex" value="50"/>
+		<param name="MaxFileSize" value="10MB"/>
+		<param name="encoding" value="GB2312"/>
+		<!-- 以何种形式输出 PatternLayout：以灵活的指定布局模式 -->
+		<layout class="org.apache.log4j.PatternLayout">  
+			<param name="ConversionPattern"
+				value="[%-5p %d{yyyy-MM-dd HH:mm:ss SSS} ] Thread[%t] %x %l %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">  
+            <param name="levelMin" value="debug" />  
+            <param name="levelMax" value="error" />  
+            <param name="AcceptOnMatch" value="true" />  
+        </filter>
+	</appender>
+	
+	<appender name="test" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="/waslog/aplog/web/test.log"/>
+		<param name="Append" value="true"/>
+		<param name="MaxBackupIndex" value="50"/>
+		<param name="MaxFileSize" value="10MB"/>
+		<param name="encoding" value="GB2312"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="[%-5p %d{yyyy-MM-dd HH:mm:ss SSS} ] Thread[%t] %x %l %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">  
+            <param name="levelMin" value="debug" />  
+            <param name="levelMax" value="error" />  
+            <param name="AcceptOnMatch" value="true" />  
+        </filter>
+	</appender>
+
+	<appender name="medicine" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="/waslog/aplog/web/medicine.log"/>
+		<param name="Append" value="true"/>
+		<param name="MaxBackupIndex" value="50"/>
+		<param name="MaxFileSize" value="10MB"/>
+		<param name="encoding" value="GB2312"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="[%-5p %d{yyyy-MM-dd HH:mm:ss SSS} ] Thread[%t] %x %l %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">  
+            <param name="levelMin" value="debug" />  
+            <param name="levelMax" value="error" />  
+            <param name="AcceptOnMatch" value="true" />  
+        </filter>
+	</appender>
+	
+	<!-- 记录器，记录哪个包下的日志 -->
+	<logger name="com.java.common">
+		<appender-ref ref="common"/>
+	</logger>
+	
+	<logger name="com.java.medicine">
+		<appender-ref ref="medicine"/>
+	</logger>
+	
+	<logger name="com.java.test">
+		<appender-ref ref="test"/>
+	</logger>
+		
+	<root>
+	    <appender-ref ref="platform"/>
+		<appender-ref ref="CONSOLE"/>
+	</root>
+	
+</log4j:configuration>

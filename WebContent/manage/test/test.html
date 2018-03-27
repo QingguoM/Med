@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>测试</title>
+<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../js/medicinecall.js"></script>
+<script type="text/javascript" src="../js/layer.js"></script>
+<script type="text/javascript">
+	var reqData = {
+		"id":1,
+		"operatorType":1
+	};
+	var medRequest = new MedRequest("ST01", reqData);
+	medRequest.callServer().done(function(resp) {
+		layer.alert(resp.RETMSG);
+	}).fail(function() {
+		layer.alert(resp.RETMSG);
+	});
+</script>
+</head>
+<body>
+	AHFJLS
+</body>
+</html>

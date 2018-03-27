@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd 
+                        http://www.springframework.org/schema/context 
+                        http://www.springframework.org/schema/context/spring-context-4.3.xsd
+                        http://www.springframework.org/schema/tx  
+                        http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+	
+	<!-- 配置数据源 -->
+<!-- 	<bean id="dataSource" 
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource"> -->
+<!-- 		<property name="driverClassName"> -->
+<!-- 			<value>com.mysql.jdbc.Driver</value> -->
+<!-- 		</property> -->
+<!-- 		<property name="url"> -->
+<!--  			<value>jdbc:mysql://localhost:3306/pharmacystock?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull</value> -->
+<!-- 			<value>jdbc:mysql://localhost:3306/spdbdatabase?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull</value> -->
+<!-- 		</property> -->
+<!-- 		<property name="username"> -->
+<!--  			<value>root</value> --> 
+<!-- 			<value>admin</value> -->
+<!-- 		</property> -->
+<!-- 		<property name="password"> -->
+<!--  			<value>root</value> --> 
+<!-- 			<value>topcheer@123</value> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+
+	<!-- value  medicine修改为tomcat配置的数据源名字 -->
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName">
+         	<value>java:comp/env/medicine</value>
+         </property> 
+    </bean> 
+    
+	<!-- 创建SqlSessionFactory，同时指定数据源 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:config/common/mybatis/mybatis-config.xml"></property>
+		<property name="mapperLocations">
+			<array>
+				<value>classpath*:config/**/mapper/*Mapper.xml</value>
+			</array>
+		</property>
+	</bean>
+
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+  		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 配置事务处理策略，transaction-manager属性指定事务管理器。 若事务管理器bean的id即为transactionManager，则 
+		transaction-manager的属性可以不指定 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<!--所有以find开头的方法都是只读的 -->
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="query*" read-only="true" />
+			<tx:method name="save*" />
+			<tx:method name="update*" />
+			<tx:method name="insert*" />
+			<tx:method name="delete*" />
+			<!--其他方法使用默认事务策略 -->
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:config>
+	    <aop:pointcut id="pointcut"
+	         expression="execution(* com.java.common.dao.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut" />
+	</aop:config>
+	
+</beans>
