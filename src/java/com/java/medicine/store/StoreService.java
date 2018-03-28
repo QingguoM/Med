@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,9 +56,10 @@ public class StoreService implements JSONService{
 					break;
 				default://查询库存
 					list = selectStoreOrder(reqObj);
-					if(list == null) {//查询异常
-						json.put(ICommonConstant.RETCODE, ICommonConstant.ST000Q2);
-						json.put(ICommonConstant.RETMSG, ICommonConstant.ST000Q2_MSG);
+					if("error".equals(MapUtils.getString(list.get(0), "error"))) {
+						//查询异常
+						json.put(ICommonConstant.RETCODE, ICommonConstant.ST000Q1);
+						json.put(ICommonConstant.RETMSG, ICommonConstant.ST000Q1_MSG);
 					}else {
 						json.put("DATA", list);
 						json.put(ICommonConstant.RETCODE, "0000000");
@@ -81,7 +83,7 @@ public class StoreService implements JSONService{
 	}
 
 	/**
-	 * 查询库存订单 TODO
+	 * 查询库存订单 TODO(分页)
 	 * @param reqObj
 	 * @return
 	 */
@@ -91,14 +93,17 @@ public class StoreService implements JSONService{
 		Map<String,Object> map = new HashMap<String, Object>();
 		try {
 			logger.info("selectStoreOrder start");
-			if("".equals(id)) {
-				list = basedao.selectList("", map);
-			}else {
-				map = basedao.selectOne("", id);
-				list.add(map);
-			}
+			logger.info("selectStoreOrder reqObj:" +reqObj);
+			map.put("id", reqObj.optInt("id"));
+			map.put("name", reqObj.optString("name"));
+			map.put("number", reqObj.optString("number"));
+			map.put("code", reqObj.optString("code"));
+			list = basedao.selectList("CM.selectStoreOrder", map);
+			logger.info("selectStoreOrder list:" +list);
 		} catch (Exception e) {
-			list =null;
+			logger.info("selectStoreOrder error");
+			map.put("error", "error");
+			list.add(map);
 		}
 		logger.info("selectStoreOrder end");
 		return list;
@@ -123,7 +128,7 @@ public class StoreService implements JSONService{
 				return basedao.delete("CM.deleteStoreById", map);
 			}else {
 				logger.info("deleteStoreOrder end list");
-				return basedao.deleteByIds("CM.deleteStoreById", list);
+				return basedao.deleteByIds("CM.deleteStoresByIds", list);
 			}
 			
 		} catch (Exception e) {

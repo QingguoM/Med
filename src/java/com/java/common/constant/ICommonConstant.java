@@ -22,10 +22,8 @@ public interface ICommonConstant {
 	String ST000I2 = "ST000I2"; //插入失败
 	String ST000I2_MSG = "插入失败";
 		
-	String ST000Q1 = "ST000Q1"; //没有查询到此条件的信息  
-	String ST000Q1_MSG = "没有查询到此条件的信息";
-	String ST000Q2 = "ST000Q2"; //查询库存信息异常 
-	String ST000Q2_MSG = "查询异常";
+	String ST000Q1 = "ST000Q1"; //查询库存信息异常 
+	String ST000Q1_MSG = "查询异常";
 	
 	String ST000D1 = "ST000D1";//
 	String ST000D1_MSG = "删除失败";
