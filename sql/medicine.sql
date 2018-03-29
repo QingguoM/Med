@@ -48,14 +48,16 @@ DROP TABLE IF EXISTS `operator`;
 
 CREATE TABLE `operator` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(12) DEFAULT NULL COMMENT '账号',
-  `password` varchar(12) DEFAULT NULL COMMENT '账户密码',
+  `username` varchar(50) DEFAULT NULL COMMENT '账号',
+  `password` varchar(20) DEFAULT NULL COMMENT '账户密码',
   `class` int(2) DEFAULT NULL COMMENT '用户类型',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='管理员表';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='管理员表';
 
 /*Data for the table `operator` */
+
+insert  into `operator`(`id`,`username`,`password`,`class`) values (1,'12','12',1),(2,'1','13',2),(6,'123','3',NULL);
 
 /*Table structure for table `outorder` */
 
@@ -93,12 +95,14 @@ CREATE TABLE `store` (
   `price` double NOT NULL COMMENT '药品进货单价',
   `count` int(11) NOT NULL COMMENT '药品数量',
   `store_date` date DEFAULT NULL COMMENT '修改时间',
-  `operator` int(11) DEFAULT NULL COMMENT '操作员编号',
+  `operator` varchar(50) DEFAULT NULL COMMENT '操作员编号',
   `update_date` date DEFAULT NULL COMMENT '最后一次更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 /*Data for the table `store` */
+
+insert  into `store`(`id`,`code`,`number`,`name`,`type`,`made_date`,`useless_date`,`unit`,`price`,`count`,`store_date`,`operator`,`update_date`) values (1,'1','1','1','1','2018-03-01','2018-03-28','1',1,1,'2018-03-27','0','2018-03-22'),(7,'2','','','','0000-00-00','0000-00-00','',0,0,NULL,NULL,NULL);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
