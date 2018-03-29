@@ -2,20 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="CM" >
 	
+  	<!-- 查询全部库存信息 -->
+    <select id="selectAllStoreOrder" parameterType="java.lang.String" resultType="java.util.Map" >
+	    SELECT * FROM store 
+	</select>
+    
     <!-- 条件查询库存信息 -->
 	<select id="selectStoreOrder" parameterType="java.lang.String" resultType="java.util.Map" >
-	    SELECT * FROM store WHERE 
-	    <if test ="id !=null and id != ''">,id = #{id}</if> and
-	    <if test ="code !=null and code != ''">,code = #{code}</if> and
-	    <if test ="number !=null and number != ''">,number = #{number}</if> and
-	    <if test ="name !=null and name != ''">,name = #{name}</if> and
-	    <if test ="type !=null and type != ''">,type = #{type}</if> and
-	    <if test ="made_date !=null and made_date != ''">,made_date = #{made_date}</if> and
-	    <if test ="useless_date !=null and useless_date != ''">,useless_date = #{useless_date}</if> and
-	    <if test ="unit !=null and unit != ''">,unit = #{unit}</if> and
-	    <if test ="price !=null and price != ''">,price = #{price}</if> and
-	    <if test ="count !=null and count != ''">,count = #{count}</if> 
+	    SELECT * FROM store
+	     <where>
+	         <if test ="code !=null and code != ''">code = #{code}</if> 
+	         <if test ="code !=null and code != '' and 
+	             		number !=null and number != ''">
+	             and 
+	         </if>
+	         <if test ="number !=null and number != ''">number = #{number}</if>  
+	         <if test ="name !=null and name != '' and 
+	             		number !=null and number != ''">
+	             and 
+	         </if>
+	         <if test ="(number =null or number = '') and
+	             		name !=null and name != '' and 
+			            code !=null and code != '' ">
+	             and 
+	         </if>
+	         <if test ="name !=null and name != ''">name = #{name}</if>  	       
+	     </where> 
 	</select>
+	
+	<!-- 根据id查询库存订单 -->
+	<select id="selectStoreOrderById" parameterType="java.lang.Integer" resultType="java.util.Map" >
+	    SELECT * FROM store where id= #{id} 
+	 </select>
+	
 	
 	<!-- 根据id删除库存信息 -->
 	<delete id="deleteStoreById" parameterType="java.lang.Integer">

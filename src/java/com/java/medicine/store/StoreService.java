@@ -14,6 +14,8 @@ import com.java.common.access.JSONService;
 import com.java.common.constant.ICommonConstant;
 import com.java.common.dao.IBaseDao;
 import com.java.common.model.ResponseModel;
+import com.java.common.util.TooUtil;
+import com.sun.org.apache.regexp.internal.recompile;
 
 import net.sf.json.JSONObject;
 
@@ -54,16 +56,49 @@ public class StoreService implements JSONService{
 						json.put(ICommonConstant.RETMSG, "删除成功");
 					}
 					break;
-				default://查询库存
-					list = selectStoreOrder(reqObj);
-					if("error".equals(MapUtils.getString(list.get(0), "error"))) {
-						//查询异常
-						json.put(ICommonConstant.RETCODE, ICommonConstant.ST000Q1);
-						json.put(ICommonConstant.RETMSG, ICommonConstant.ST000Q1_MSG);
-					}else {
-						json.put("DATA", list);
+				case 2://条件查询
+					if(reqObj.optInt("id")==0 &&
+					   reqObj.optString("code").equals("")&&
+					   reqObj.optString("name").equals("")&&
+					   reqObj.optString("number").equals("")) {
 						json.put(ICommonConstant.RETCODE, "0000000");
-						json.put(ICommonConstant.RETMSG, "查询成功");
+						json.put(ICommonConstant.RETMSG, "请输入查询条件");
+					}else {
+						list = selectStoreOrder(reqObj);
+						if(list.isEmpty()) {
+							json.put("DATA", "没有相关信息");
+							json.put(ICommonConstant.RETCODE, "0000000");
+							json.put(ICommonConstant.RETMSG, "没有相关信息");
+						}else {
+							if("error".equals(MapUtils.getString(list.get(0), "error"))) {
+								//查询异常
+								json.put(ICommonConstant.RETCODE, ICommonConstant.ST000Q1);
+								json.put(ICommonConstant.RETMSG, ICommonConstant.ST000Q1_MSG);
+							}else {
+								json.put("DATA", TooUtil.formatDate(list));
+								json.put(ICommonConstant.RETCODE, "0000000");
+								json.put(ICommonConstant.RETMSG, "查询成功");
+							}
+						}
+					}
+					
+					break;
+				default://全部查询库存
+					list = selectALLStoreOrder(reqObj);
+					if(list.isEmpty()) {
+						json.put("DATA", "没有相关信息");
+						json.put(ICommonConstant.RETCODE, "0000000");
+						json.put(ICommonConstant.RETMSG, "没有相关信息");
+					}else {
+						if("error".equals(MapUtils.getString(list.get(0), "error"))) {
+							//查询异常
+							json.put(ICommonConstant.RETCODE, ICommonConstant.ST000Q1);
+							json.put(ICommonConstant.RETMSG, ICommonConstant.ST000Q1_MSG);
+						}else {
+							json.put("DATA", TooUtil.formatDate(list));
+							json.put(ICommonConstant.RETCODE, "0000000");
+							json.put(ICommonConstant.RETMSG, "查询成功");
+						}
 					}
 					break;
 			}
@@ -83,25 +118,57 @@ public class StoreService implements JSONService{
 	}
 
 	/**
-	 * 查询库存订单 TODO(分页)
+	 * TODO 分页 
+	 * 全部查询库存订单 
+	 * @param reqObj
+	 * @return
+	 */
+	private List<Map<String, Object>> selectALLStoreOrder(JSONObject reqObj) {
+		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		Map<String,Object> map = new HashMap<String, Object>();
+		
+		try {
+			logger.info("selectALLStoreOrder start");
+			logger.info("selectALLStoreOrder reqObj:" +reqObj);
+			
+			list = basedao.selectList("CM.selectAllStoreOrder", map);
+			logger.info("selectALLStoreOrder list:" +list);
+		} catch (Exception e) {
+			logger.info("selectALLStoreOrder error:"+e.toString());
+			map.put("error", "error");
+			list.add(map);
+		}
+		logger.info("selectALLStoreOrder end");
+		return list;
+	}
+
+	/**
+	 * TODO 分页 
+	 * 条件查询库存订单 
 	 * @param reqObj
 	 * @return
 	 */
 	private List<Map<String, Object>> selectStoreOrder(JSONObject reqObj) {
 		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
-		int id = reqObj.optInt("id");
 		Map<String,Object> map = new HashMap<String, Object>();
+		
 		try {
 			logger.info("selectStoreOrder start");
 			logger.info("selectStoreOrder reqObj:" +reqObj);
-			map.put("id", reqObj.optInt("id"));
-			map.put("name", reqObj.optString("name"));
-			map.put("number", reqObj.optString("number"));
-			map.put("code", reqObj.optString("code"));
-			list = basedao.selectList("CM.selectStoreOrder", map);
+			int id =reqObj.optInt("id");
+			
+			if(id == 0) {
+				map.put("name", reqObj.optString("name"));
+				map.put("number", reqObj.optString("number"));
+				map.put("code", reqObj.optString("code"));
+				list = basedao.selectList("CM.selectStoreOrder", map);
+			}else {
+				map.put("id", id);
+				list = basedao.selectList("CM.selectStoreOrderById", map); 
+			}
 			logger.info("selectStoreOrder list:" +list);
 		} catch (Exception e) {
-			logger.info("selectStoreOrder error");
+			logger.info("selectStoreOrder error:"+e.toString());
 			map.put("error", "error");
 			list.add(map);
 		}
@@ -109,6 +176,7 @@ public class StoreService implements JSONService{
 		return list;
 	}
 
+	
 	/**
 	 * 删除库存表中的订单 TODO
 	 * @param reqObj
@@ -124,17 +192,44 @@ public class StoreService implements JSONService{
 			
 			if(list==null) {
 				map.put("id",  reqObj.optInt("id"));
-				logger.info("deleteStoreOrder end id");
+				logger.info("deleteStoreOrder end id"+map.toString());
 				return basedao.delete("CM.deleteStoreById", map);
 			}else {
-				logger.info("deleteStoreOrder end list");
+				logger.info("deleteStoreOrder end list:"+list);
 				return basedao.deleteByIds("CM.deleteStoresByIds", list);
 			}
 			
 		} catch (Exception e) {
-			logger.info("deleteStoreOrder end exception");
+			logger.info("exception:"+e);
 			return -1;
 		}
+	}
+	
+	
+	/**
+	 * 查询库存中是否有同等价格的该药品
+	 * @param reqObj
+	 * @return
+	 */
+	public Object isExist(JSONObject reqObj) {
+		Map<String,Object> map = new HashMap<String, Object>();
+		Map<String, Object> returnmap = new HashMap<String, Object>();
+		map.put("code", reqObj.optString("code"));
+		map.put("number", reqObj.optString("number"));
+		map.put("name", reqObj.optString("name"));
+		map.put("made_date", reqObj.opt("made_date"));
+		map.put("useless_date", reqObj.opt("useless_date"));
+		map.put("unit", reqObj.opt("unit"));
+		map.put("price", reqObj.opt("price"));
+		map.put("input_com", reqObj.opt("input_com"));
+		
+		try {
+			returnmap = basedao.selectMap("CM.selectStoreOrder", map);
+		} catch (Exception e) {
+			returnmap = null;
+		}
+		
+		return returnmap;
 	}
 	
 }
