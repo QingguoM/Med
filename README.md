@@ -1,4 +1,5 @@
-# Med
+要点：
+1.context.xml
  <Resource auth="Container" 
           driverClassName="com.mysql.jdbc.Driver"
           name="medicine" 
